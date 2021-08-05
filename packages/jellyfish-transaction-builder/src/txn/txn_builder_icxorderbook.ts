@@ -1,7 +1,8 @@
 import {
   OP_CODES, Script, TransactionSegWit
+  , ICXSubmitDFCHTLC
 } from '@defichain/jellyfish-transaction'
-import { ICXSubmitDFCHTLC } from '@defichain/jellyfish-transaction/script/dftx/dftx_icxorderbook'
+
 import { P2WPKHTxnBuilder } from './txn_builder'
 
 export class TxnBuilderICXOrderBook extends P2WPKHTxnBuilder {
