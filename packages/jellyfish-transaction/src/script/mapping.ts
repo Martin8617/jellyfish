@@ -50,7 +50,7 @@ import {
 import { CAutoAuthPrep } from './dftx/dftx_misc'
 import { CCreateMasterNode, CreateMasterNode, CResignMasterNode, ResignMasterNode } from './dftx/dftx_masternode'
 import { CSetGovernance, SetGovernance } from './dftx/dftx_governance'
-import { CICXSubmitDFCHTLC, CICXSubmitEXTHTLC, ICXSubmitDFCHTLC, ICXSubmitEXTHTLC } from './dftx/dftx_icxorderbook'
+import { CICXClaimDFCHTLC, CICXSubmitDFCHTLC, CICXSubmitEXTHTLC, ICXClaimDFCHTLC, ICXSubmitDFCHTLC, ICXSubmitEXTHTLC } from './dftx/dftx_icxorderbook'
 
 /**
  * @param num to map as OPCode, 1 byte long
@@ -322,6 +322,14 @@ export const OP_CODES = {
       type: CICXSubmitEXTHTLC.OP_CODE,
       name: CICXSubmitEXTHTLC.OP_NAME,
       data: icxSubmitEXTHTLC
+    })
+  },
+  OP_DEFI_TX_ICX_CLAIM_DFC_HTLC: (icxClaimDFCHTLC: ICXClaimDFCHTLC): OP_DEFI_TX => {
+    return new OP_DEFI_TX({
+      signature: CDfTx.SIGNATURE,
+      type: CICXClaimDFCHTLC.OP_CODE,
+      name: CICXClaimDFCHTLC.OP_NAME,
+      data: icxClaimDFCHTLC
     })
   },
   OP_0: new constants.OP_0(),

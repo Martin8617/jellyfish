@@ -37,12 +37,12 @@ export class CICXSubmitDFCHTLC extends ComposableBuffer<ICXSubmitDFCHTLC> {
  * ICXSubmitEXTHTLC DeFi transaction
  */
 export interface ICXSubmitEXTHTLC {
-  offerTx: string // ----------| 32 byte, txid for which offer is this HTLC
-  amount: BigNumber // --------| 8 byte, amount that is put in HTLC
-  hash: string // -------------| 32 byte, hash for the hash lock part
+  offerTx: string // -----------| 32 byte, txid for which offer is this HTLC
+  amount: BigNumber // ---------| 8 byte, amount that is put in HTLC
+  hash: string // --------------| 32 byte, hash for the hash lock part
   htlcScriptAddress: string // -| 1 byte for len + len bytes, script address of external htlc
   ownerPubkey: string // -------| 1 byte for len + len bytes, pubkey of the owner to which the funds are refunded if HTLC timeouts
-  timeout: number // ----------| 4 byte, timeout (absolute in block) for expiration of external htlc in external chain blocks
+  timeout: number // -----------| 4 byte, timeout (absolute in block) for expiration of external htlc in external chain blocks
 }
 
 /**
@@ -73,6 +73,42 @@ export class CICXSubmitEXTHTLC extends ComposableBuffer<ICXSubmitEXTHTLC> {
         }
       },
       ComposableBuffer.uInt32(() => msg.timeout, v => msg.timeout = v)
+    ]
+  }
+}
+
+/**
+ * ICXClaimDFCHTLC DeFi transaction
+ */
+export interface ICXClaimDFCHTLC {
+  dfcHTLCTx: string // ----| 32 byte, txid of dfc htlc tx for which the claim is
+  seed: string // ---------| 1 byte for len + len bytes, secret seed for claiming htlc
+}
+
+/**
+ * Composable ICXClaimDFCHTLC, C stands for Composable.
+ * Immutable by design, bi-directional fromBuffer, toBuffer deep composer.
+ */
+export class CICXClaimDFCHTLC extends ComposableBuffer<ICXClaimDFCHTLC> {
+  static OP_CODE = 0x35
+  static OP_NAME = 'OP_DEFI_TX_ICX_CLAIM_DFC_HTLC'
+
+  composers (msg: ICXClaimDFCHTLC): BufferComposer[] {
+    return [
+      ComposableBuffer.hexBEBufferLE(32, () => msg.dfcHTLCTx, v => msg.dfcHTLCTx = v),
+      { // NOTE(surangap): may be use optionalVarUIntHex when available or move this piece of code to buffer_composer.ts
+        fromBuffer: (buffer: SmartBuffer): void => {
+          const length = buffer.readUInt8()
+          const buff = Buffer.from(buffer.readBuffer(length))
+          msg.seed = buff.toString('hex')
+        },
+        toBuffer: (buffer: SmartBuffer): void => {
+          const hex = msg.seed
+          const buff: Buffer = Buffer.from(hex, 'hex')
+          buffer.writeUInt8(buff.length)
+          buffer.writeBuffer(buff)
+        }
+      }
     ]
   }
 }

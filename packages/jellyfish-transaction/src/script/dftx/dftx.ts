@@ -29,7 +29,7 @@ import {
 } from './dftx_oracles'
 import { CDeFiOpUnmapped, DeFiOpUnmapped } from './dftx_unmapped'
 import { CSetGovernance, SetGovernance } from './dftx_governance'
-import { CICXSubmitDFCHTLC, CICXSubmitEXTHTLC, ICXSubmitDFCHTLC, ICXSubmitEXTHTLC } from './dftx_icxorderbook'
+import { CICXClaimDFCHTLC, CICXSubmitDFCHTLC, CICXSubmitEXTHTLC, ICXClaimDFCHTLC, ICXSubmitDFCHTLC, ICXSubmitEXTHTLC } from './dftx_icxorderbook'
 
 // Disabling no-return-assign makes the code cleaner with the setter and getter */
 /* eslint-disable no-return-assign */
@@ -152,6 +152,8 @@ export class CDfTx extends ComposableBuffer<DfTx<any>> {
         return compose<ICXSubmitDFCHTLC>(CICXSubmitDFCHTLC.OP_NAME, d => new CICXSubmitDFCHTLC(d))
       case CICXSubmitEXTHTLC.OP_CODE:
         return compose<ICXSubmitEXTHTLC>(CICXSubmitEXTHTLC.OP_NAME, d => new CICXSubmitEXTHTLC(d))
+      case CICXClaimDFCHTLC.OP_CODE:
+        return compose<ICXClaimDFCHTLC>(CICXClaimDFCHTLC.OP_NAME, d => new CICXClaimDFCHTLC(d))
       default:
         return compose<DeFiOpUnmapped>(CDeFiOpUnmapped.OP_NAME, d => new CDeFiOpUnmapped(d))
     }
